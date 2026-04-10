@@ -31,7 +31,7 @@ app.get('/home', (req, res) => {
 });
 
 app.get('/api/test', (req, res) => {
-    res.json({ messaggio: "Ciao da Express!", timestamp: new Date() });
+    res.json({ messaggio: "Ciao da Express!!", timestamp: new Date() });
 });
 
 app.get('/', (req, res) => {
