@@ -1,32 +1,85 @@
 import { useState, useEffect } from "react";
+const regNumerico = /^[0-9]+$/;
 
 export default function PagBMI() {
-    // const [caricamento, setCaricamento] = useState(true);
+    const [peso, setPeso] = useState("");
+    const [altezza, setAltezza] = useState("");
+    const [errors, setErrors] = useState({});
 
+    // const [caricamento, setCaricamento] = useState(true);
     // if (caricamento) return <p>Caricamento in corso...</p>;
+    
+    async function gestisciBMI(e) {
+        e.preventDefault();
+
+        const nuoviErrori = {};
+
+        // I numeri decimali usano il punto
+        const p = peso.replace(',', '.');
+        const a = altezza.replace(',', '.');
+
+        // Verifico se i valori numerici sono validi
+        if (!regNumerico.test(p) || isNaN(parseFloat(p))) {
+            nuoviErrori.peso = "Inserisci un peso valido";
+        }
+        if (!regNumerico.test(a) || isNaN(parseFloat(a))) {
+            nuoviErrori.altezza = "Inserisci un'altezza valida";
+        }
+
+        // Guardo che ci siano errori
+        if (Object.keys(nuoviErrori).length > 0) {
+            setErrors(nuoviErrori); // Aggiungo gli errori
+            return;
+        }
+        setErrors({}); // Svuoto gli errori
+
+        const datiBMI = { peso, altezza };
+        try {
+            const response = await fetch('/api/calcolo_bmi', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(datiBMI)
+            });
+
+            if (response.ok) {
+                const risultato = await response.json();
+                console.log(risultato)
+                // setBmi(risultato.valoreBmi);
+            }
+        } catch (errore) {
+            console.error("Errore invio:", errore);
+        }
+
+    }
 
     return (
         <main class="max-w-5xl mx-auto py-12 px-6">
             <section class="bg-white border-2 border-slate-100 rounded-3xl p-10 shadow-2xl mb-16 relative overflow-hidden">
-                <div class="space-y-8">
-                    <div class="flex items-center gap-6">
-                        <span class="text-sm font-bold text-slate-400 uppercase tracking-widest">Input Peso (kg)</span>
-                        <input type="number" placeholder="PESO"
-                            class="w-48 px-5 py-4 border-2 border-slate-200 rounded-xl focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 outline-none transition-all font-bold text-lg placeholder:text-slate-300" />
+                <form class="space-y-8" onSubmit={gestisciBMI}>
+                    <div class="flex flex-wrap">
+                        <div class="flex items-center gap-6">
+                            <label htmlFor="input-peso" class="w-32 text-sm font-bold text-slate-400 uppercase tracking-widest">Peso (kg)</label>
+                            <input id="input-peso" type="text" placeholder="PESO" value={peso} onChange={(e) => setPeso(e.target.value)}
+                                class="w-48 px-5 py-4 border-2 border-slate-200 rounded-xl focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 outline-none transition-all font-bold text-lg placeholder:text-slate-300" />
+                        </div>
+                        <div>
+                            Errore
+                        </div>
+
                     </div>
 
                     <div class="flex items-center gap-6">
-                        <span class="text-sm font-bold text-slate-400 uppercase tracking-widest">Input Altezza (cm)</span>
-                        <input type="number" placeholder="ALTEZZA"
+                        <label htmlFor="input-altezza" class="w-32 text-sm font-bold text-slate-400 uppercase tracking-widest">Altezza (cm)</label>
+                        <input id="input-altezza" type="text" placeholder="ALTEZZA" value={altezza} onChange={(e) => setAltezza(e.target.value)}
                             class="w-48 px-5 py-4 border-2 border-slate-200 rounded-xl focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 outline-none transition-all font-bold text-lg placeholder:text-slate-300" />
                     </div>
 
                     <div class="flex justify-center pt-4">
-                        <button class="w-full max-w-[200px] py-4 bg-slate-900 hover:bg-emerald-600 text-white font-black rounded-xl shadow-lg hover:shadow-emerald-200 transition-all duration-300 uppercase tracking-widest">
+                        <button type="submit" class="w-full max-w-[200px] py-4 bg-slate-900 hover:bg-emerald-600 text-white font-black rounded-xl shadow-lg hover:shadow-emerald-200 transition-all duration-300 uppercase tracking-widest">
                             Calcola
                         </button>
                     </div>
-                </div>
+                </form>
             </section>
 
             <article class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">

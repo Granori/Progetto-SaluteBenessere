@@ -6,7 +6,7 @@ export default function Navbar() {
         <header class="w-full bg-white border-b border-slate-200 px-10 py-5 flex justify-between items-center shadow-sm">
             <div class="font-black text-2xl tracking-tighter text-emerald-600 italic">HEALTHY.</div>
             <nav class="flex gap-8 text-sm font-bold uppercase tracking-widest text-slate-500">
-                <NavLink to="/home"
+                <NavLink to="/"
                     className={({ isActive }) => isActive ? "text-emerald-600 border-b-2 border-emerald-600" : "hover:text-emerald-500 transition"}
                 >
                     Home

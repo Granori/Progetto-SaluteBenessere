@@ -26,16 +26,21 @@ app.use((req, res, next) => {
 
 app.use(express.static(join(import.meta.dirname, 'dist')));
 
-app.get('/home', (req, res) => {
+app.get('/', (req, res) => {
   res.sendFile(join(import.meta.dirname, 'dist', 'index.html'));
+});
+
+app.get('/home', (req, res) => {
+  res.redirect('/');
 });
 
 app.get('/api/test', (req, res) => {
     res.json({ messaggio: "Ciao da Express!!", timestamp: new Date() });
 });
 
-app.get('/', (req, res) => {
-  res.redirect('/home');
+app.post('/api/calcolo_bmi', (req, res) => {
+    const body = req.body;
+    
 });
 
 app.use((req, res) => {

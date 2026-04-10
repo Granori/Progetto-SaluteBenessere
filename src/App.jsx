@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useState } from 'react';
 import Navbar from './pages/navbar';
 import Home from './pages/home';
@@ -13,10 +13,13 @@ function App() {
         <Navbar />
 
         <Routes>
-          <Route path="/" element={<PagBMI />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Navigate to="/" replace />} />
+
           <Route path="/calcolatorebmi" element={<PagBMI />} />
           <Route path="/contacalorie" element={<PagCalorie />} />
 
+          <Route path="*" element={<h1>Error 404</h1>} />
         </Routes>
 
       </div>
