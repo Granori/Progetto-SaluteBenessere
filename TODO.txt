@@ -1,0 +1,2 @@
+da fare:
+Edamam Food Database API (api gratuita per dati dei cibi attraverso una foto)
