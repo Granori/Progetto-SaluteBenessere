@@ -1,2 +1,3 @@
 da fare:
-Edamam Food Database API (api gratuita per dati dei cibi attraverso una foto)
+Edamam Food Database API (api gratuita per dati dei cibi attraverso una foto, 500-1000 chiamate gratuite)
+LogMeal API (riconosce piatti misti, 30-50 chiamate gratuite)
