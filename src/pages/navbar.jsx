@@ -22,11 +22,15 @@ export default function Navbar() {
                 </div>
             </div>
 
-            {isOpen && (
-                <div className="md:hidden bg-white border-b border-slate-200 px-4 py-4 space-y-2">
-                    <NavbarLinks />
+            <div className={`${isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'} grid md:hidden transition-[grid-template-rows,opacity] duration-300 ease-in-out`}>
+                <div className="overflow-hidden bg-white">
+                    <div className="px-4 border-b border-slate-200 py-4 space-y-2">
+                        <NavbarLinks chiudiMenu={() => setIsOpen(false)}/>
+
+                    </div>
                 </div>
-            )}
+            </div>
+
         </nav>
     )
 }
