@@ -1,6 +1,7 @@
 import express from 'express';
 import { join } from "node:path";
 
+const regNumerico = /^[0-9]+$/;
 
 let app = express();
 
@@ -40,7 +41,25 @@ app.get('/api/test', (req, res) => {
 
 app.post('/api/calcolo_bmi', (req, res) => {
     const body = req.body;
+
+    const errors = {};
+    const p = body.peso.replace(',', '.');
+    const a = body.altezza.replace(',', '.');
     
+    if (!regNumerico.test(p) || isNaN(parseFloat(p))) {
+        errors.peso = "Errore server";
+    }
+    if (!regNumerico.test(a) || isNaN(parseFloat(a))) {
+        errors.altezza = "Errore server";
+    }
+
+    if (Object.keys(errors).length > 0) {
+        return res.status(400).json(errors);
+    }
+
+    let bmi = (p / Math.pow(a / 100, 2)).toFixed(1);
+    res.status(200).json(bmi);
+
 });
 
 app.use((req, res) => {
@@ -48,5 +67,5 @@ app.use((req, res) => {
 });
 
 const server = app.listen(app.get('port'), () => {
-    console.log(`Server in ascolto su http://localhost:${app.get('port')}`);
+    console.log(`Server in ascolto su http://localhost:${app.get('port')}\n`);
 });

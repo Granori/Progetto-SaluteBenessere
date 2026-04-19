@@ -1,15 +1,22 @@
 import { useState, useEffect } from "react";
 import FormInput from "./input_bmi";
+import LoadingSpin from "./caricamento";
 const regNumerico = /^[0-9]+$/;
 
 export default function PagBMI() {
     const [peso, setPeso] = useState("");
     const [altezza, setAltezza] = useState("");
     const [errors, setErrors] = useState({});
-
-    // const [caricamento, setCaricamento] = useState(true);
-    // if (caricamento) return <p>Caricamento in corso...</p>;
     
+    const [bmi, setBmi] = useState(-1);
+    const bmiPos = bmi >= 0 ? Math.min(Math.max((bmi * 100) / 40, 0), 100) : 0;
+
+    const [caricamento, setCaricamento] = useState(true);
+    useEffect(() => {
+        setCaricamento(false);
+    }, []);
+    
+    const [attesa, setAttesa] = useState(false);
     async function gestisciBMI(e) {
         e.preventDefault();
 
@@ -34,6 +41,7 @@ export default function PagBMI() {
         }
         setErrors({}); // Svuoto gli errori
 
+        setAttesa(true);
         const datiBMI = { peso, altezza };
         try {
             const response = await fetch('/api/calcolo_bmi', {
@@ -44,14 +52,21 @@ export default function PagBMI() {
 
             if (response.ok) {
                 const risultato = await response.json();
-                console.log(risultato)
-                // setBmi(risultato.valoreBmi);
+
+                console.log(risultato);
+                setBmi(risultato);
             }
         } catch (errore) {
             console.error("Errore invio:", errore);
         }
-
+        setAttesa(false);
     }
+
+    if (caricamento) return (
+        <div className="fixed inset-0 grid h-screen place-items-center">
+            <LoadingSpin />
+        </div>
+    );
 
     return (
         <main className="max-w-5xl mx-auto py-12 px-6">
@@ -76,12 +91,69 @@ export default function PagBMI() {
                     />
 
                     <div className="flex justify-center pt-4">
-                        <button type="submit" className="w-full max-w-[200px] py-4 bg-slate-900 hover:bg-emerald-600 text-white font-black rounded-xl shadow-lg hover:shadow-emerald-200 transition-all duration-300 uppercase tracking-widest">
+                        <button type="submit" className="w-full max-w-50 py-4 bg-slate-900 hover:bg-emerald-600 text-white font-black rounded-xl shadow-lg hover:shadow-emerald-200 transition-all duration-300 uppercase tracking-widest">
                             Calcola
                         </button>
                     </div>
                 </form>
             </section>
+
+            <div className="relative pt-5 pb-4">
+                { attesa && 
+                    <div className="absolute left-1/2 -translate-x-1/2 bottom-full">
+                        <LoadingSpin color="border-blue-600" size="w-10 h-10" /> 
+                    </div>
+                }
+
+                {/* Contenitore principale con padding superiore per dare spazio all'etichetta */}
+                <div className="relative pb-4">
+
+                    {/* Contenitore della Barra + Etichetta */}
+                    <div className="relative h-4 w-full flex rounded-full">
+                        {/* Etichetta Valore Corrente: Ancorata al top della barra tramite bottom-full */}
+                        { bmi >= 0 && !attesa &&
+                            <div 
+                                className="absolute bottom-full mb-2 flex flex-col items-center transition-all duration-500 ease-out"
+                                style={{ left: `${bmiPos}%`, transform: 'translateX(-50%)' }}
+                            >
+                                {/* Il colore dello sfondo cambia dinamicamente in base alla zona */}
+                                <span className={`text-white text-xs font-bold px-2 py-1 rounded shadow-sm transition-colors duration-500 ${
+                                    bmi < 18.5 ? 'bg-blue-400' : 
+                                    bmi < 25 ? 'bg-emerald-400' : 
+                                    bmi < 30 ? 'bg-yellow-400' : 'bg-red-400'
+                                }`}>
+                                    {bmi}
+                                </span>
+                                {/* Freccia dell'etichetta: eredita il colore del testo sopra */}
+                                <div className={`w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[5px] transition-colors duration-500 ${
+                                    bmi < 18.5 ? 'border-t-blue-400' : 
+                                    bmi < 25 ? 'border-t-emerald-400' : 
+                                    bmi < 30 ? 'border-t-yellow-400' : 'border-t-red-400'
+                                }`}></div>
+                            </div>
+                        }
+                        
+
+                        {/* Barra Graduata (dentro il contenitore relative per un allineamento perfetto) */}
+                        <div className="flex w-full h-full rounded-full overflow-hidden border border-gray-100/50">
+                            <div className="h-full bg-blue-400" style={{ width: '46.25%' }}></div> {/* Fino a 18.5 */}
+                            <div className="h-full bg-emerald-400" style={{ width: '16.25%' }}></div> {/* Da 18.5 a 25 (6.5 punti = 16.25%) */}
+                            <div className="h-full bg-yellow-400" style={{ width: '12.5%' }}></div> {/* Da 25 a 30 (5 punti = 12.5%) */}
+                            <div className="h-full bg-red-400" style={{ width: '25%' }}></div> {/* Da 30 a 40 (10 punti = 25%) */}
+                        </div>
+                    </div>
+
+                    {/* Legenda sotto la barra */}
+                    <div className="relative mt-2 text-[10px] text-gray-400 font-bold uppercase h-4">
+                        <span className="absolute left-0">0</span>
+                        <span className="absolute" style={{ left: '46.25%' }}>18.5</span>
+                        <span className="absolute" style={{ left: '62.5%' }}>25</span>
+                        <span className="absolute" style={{ left: '75%' }}>30</span>
+                        <span className="absolute right-0">40+</span>
+                    </div>
+                </div>
+
+            </div>
 
             <article className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
                 <div className="space-y-6">
