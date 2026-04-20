@@ -57,7 +57,7 @@ app.post('/api/calcolo_bmi', (req, res) => {
         return res.status(400).json(errors);
     }
 
-    let bmi = (p / Math.pow(a / 100, 2)).toFixed(1);
+    const bmi = (p / Math.pow(a / 100, 2)).toFixed(1);
     res.status(200).json(bmi);
 
 });
