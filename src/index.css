@@ -1,3 +1,57 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Light Mode */
+  --color-sfondo: var(--color-slate-50);
+  --color-testo: var(--colore-slate-900);
+  --color-testo-affine: var(--color-slate-100);
+  --color-testo-opaco: var(--color-slate-300);
+  --color-icona: var(--color-slate-700);
+
+  --color-pulsante: var(--color-slate-900);
+  --color-errore-shadow: var(--color-red-100);
+  --color-bordo-errore: var(--color-red-400);
+  --color-testo-errore: var(--color-red-500);
+
+  --color-card: var(--color-white);
+  --color-bordo: var(--color-slate-100);
+  --color-ombra: var(--color-slate-400);
+
+  --color-nav: var(--color-slate-50);
+  --color-bordo-nav: var(--color-slate-200);
+  --color-testo-nav: var(--color-slate-500);
+
+  --color-verde: var(--color-emerald-600);
+  --color-verde-hover: var(--color-emerald-500);
+  --color-verde-shadow: var(--color-emerald-200);
+}
+
+/* Dark Mode */
+.dark {
+  --color-sfondo: var(--color-slate-900);
+  --color-testo: var(--color-slate-100);
+  --color-testo-affine: var(--color-slate-900);
+  --color-testo-opaco: var(--color-slate-600);
+  --color-icona: var(--color-slate-200);
+
+  --color-pulsante: var(--color-slate-100);
+  --color-errore-shadow: var(--color-red-900);
+  --color-bordo-errore: var(--color-red-400);
+  --color-testo-errore: var(--color-red-500);
+
+  --color-card: var(--color-slate-800);
+  --color-bordo: var(--color-slate-800);
+  --color-ombra: var(--color-slate-800);
+
+  --color-nav: var(--color-slate-800);
+  --color-bordo-nav: var(--color-slate-700);
+  --color-testo-nav: var(--color-slate-100);
+
+  --color-verde: var(--color-emerald-400);
+  --color-verde-hover: var(--color-emerald-500);
+  --color-verde-shadow: var(--color-emerald-800);
+}
+
 /* * { outline: 1px solid red !important; } */

@@ -69,8 +69,8 @@ export default function PagBMI() {
     );
 
     return (
-        <main className="max-w-5xl mx-auto py-12 px-6">
-            <section className="bg-white border-2 border-slate-100 rounded-3xl p-10 shadow-2xl mb-16 relative overflow-hidden">
+        <main className="text-testo max-w-5xl mx-auto py-12 px-6">
+            <section className="bg-card border-bordo border-2 rounded-3xl p-10 shadow-2xl mb-16 relative overflow-hidden">
                 <form className="space-y-8" onSubmit={gestisciBMI}>
                     <FormInput 
                         label="Peso (kg)"
@@ -91,7 +91,7 @@ export default function PagBMI() {
                     />
 
                     <div className="flex justify-center pt-4">
-                        <button type="submit" className="w-full max-w-50 py-4 bg-slate-900 hover:bg-emerald-600 text-white font-black rounded-xl shadow-lg hover:shadow-emerald-200 transition-all duration-300 uppercase tracking-widest">
+                        <button type="submit" className="bg-pulsante text-testo-affine hover:bg-verde-hover hover:shadow-verde-shadow w-full max-w-50 py-4 font-black rounded-xl shadow-lg transition-all duration-300 uppercase tracking-widest">
                             Calcola
                         </button>
                     </div>
@@ -144,7 +144,7 @@ export default function PagBMI() {
                     </div>
 
                     {/* Legenda sotto la barra */}
-                    <div className="relative mt-2 text-[10px] text-gray-400 font-bold uppercase h-4">
+                    <div className="relative mt-2 text-[10px] text-testo-nav font-bold uppercase h-4">
                         <span className="absolute left-0">0</span>
                         <span className="absolute" style={{ left: '46.25%' }}>18.5</span>
                         <span className="absolute" style={{ left: '62.5%' }}>25</span>
@@ -157,8 +157,8 @@ export default function PagBMI() {
 
             <article className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
                 <div className="space-y-6">
-                    <h2 className="text-3xl font-black leading-tight text-slate-800">Perché monitorare il proprio benessere?</h2>
-                    <div className="space-y-4 text-lg text-slate-600 leading-relaxed">
+                    <h2 className="text-testo text-3xl font-black leading-tight">Perché monitorare il proprio benessere?</h2>
+                    <div className="text-testo space-y-4 text-lg leading-relaxed">
                         <p className="border-l-4 border-emerald-400 pl-6">Il calcolo del BMI e delle calorie è il primo passo per una consapevolezza alimentare profonda.</p>
                         <p>Mantenere un peso forma non è solo una questione estetica, ma una prevenzione attiva contro patologie cardiovascolari e metaboliche.</p>
                         <p>Utilizza i nostri dati per pianificare la tua dieta settimanale in modo scientifico e bilanciato, senza rinunciare al piacere del buon cibo.</p>
