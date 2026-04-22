@@ -21,7 +21,7 @@ export default function Navbar({ openSettings }) {
     }
 
     return (
-        <nav className="w-full bg-nav border-bordo-nav border-b-2 text-testo px-10 py-5 items-center shadow-sm">
+        <nav className="w-full bg-nav border-bordo-nav sticky z-50 top-0 border-b-2 text-testo px-10 py-5 items-center shadow-sm">
             <div className="flex justify-between">
                 <div className="text-verde font-black text-2xl tracking-tighter italic">HEALTHY.</div>
 

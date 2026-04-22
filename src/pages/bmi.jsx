@@ -55,11 +55,14 @@ export default function PagBMI() {
 
                 console.log(risultato);
                 setBmi(risultato);
+                
+                setAttesa(false);
             }
+
         } catch (errore) {
             console.error("Errore invio:", errore);
         }
-        setAttesa(false);
+        // setAttesa(false);
     }
 
     if (caricamento) return (
@@ -170,7 +173,7 @@ export default function PagBMI() {
                         <img src="https://unsplash.com"
                             alt="Cibo salutare" className="object-cover w-full h-full opacity-90 hover:scale-110 transition-transform duration-700" />
                         <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-4 py-2 rounded-lg shadow-sm">
-                            <span className="text-xs font-bold uppercase text-emerald-700 italic">Immagine sulle calorie</span>
+                            <span className="text-xs font-bold uppercase text-verde italic">Immagine sulle calorie</span>
                         </div>
                     </div>
                 </div>
