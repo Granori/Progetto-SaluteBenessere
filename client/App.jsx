@@ -7,7 +7,18 @@ import PagCalorie from './pages/conta_calorie';
 
 function App() {
   const [isOpenSettings, setIsOpenSettings] = useState(false);
-  const [isDark, setIsDark] = useState(false);
+  
+  const [isDark, setIsDark] = useState(() => {
+    if (sessionStorage.getItem('DarkMode') === 'dark') {
+      return true;
+    }
+
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
+
+  useEffect(() => {
+    sessionStorage.setItem('DarkMode', isDark ? 'dark' : 'light');
+  }, [isDark]);
 
   return (
     <Router>

@@ -25,18 +25,14 @@ app.use((req, res, next) => {
 });
 
 
-app.use(express.static(join(import.meta.dirname, 'dist')));
+app.use(express.static(join(import.meta.dirname, '../dist')));
 
 app.get('/', (req, res) => {
-  res.sendFile(join(import.meta.dirname, 'dist', 'index.html'));
+  res.sendFile(join(import.meta.dirname, '../dist', 'index.html'));
 });
 
 app.get('/home', (req, res) => {
   res.redirect('/');
-});
-
-app.get('/api/test', (req, res) => {
-    res.json({ messaggio: "Ciao da Express!!", timestamp: new Date() });
 });
 
 app.post('/api/calcolo_bmi', (req, res) => {
