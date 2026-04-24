@@ -44,7 +44,7 @@ export default function PagBMI() {
         setAttesa(true);
         const datiBMI = { peso, altezza };
         try {
-            const response = await fetch('/api/calcolo_bmi', {
+            const response = await fetch('/api/health/bmi', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(datiBMI)
