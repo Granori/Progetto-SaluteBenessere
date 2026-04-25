@@ -1,16 +1,27 @@
 import express from 'express';
 import path from 'node:path';
+
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
+import cors from 'cors';
 
 // import authRoutes from './routes/authRoutes.js';
 import apiRoutes from './routes/apiRoutes.js';
 
+
 dotenv.config({ path: path.resolve(import.meta.dirname, '../.env') });
 
-mongoose.connect(process.env.CONNECTION_STRING)
-    .then(console.log('Connesso a server MongoDB'))
+mongoose.connect(process.env.CONNECTION_STRING, {
+    serverSelectionTimeoutMS: 5000 // Aspetta solo 5 secondi invece di 30
+})
+    .then(() => console.log('Connesso a server MongoDB'))
     .catch((error) => console.log('Errore connessione a server MongoDB:\n', error));
+
+app.use(cors({
+    origin: process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : process.env.FRONTEND_URL, // URL Frontend
+    credentials: true                // Permette l'invio dei Cookie HTTP-only
+}));
+
 
 const app = express();
 
