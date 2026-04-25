@@ -1,9 +1,16 @@
 import express from 'express';
-import { join } from "node:path";
+import path from 'node:path';
+import dotenv from 'dotenv';
+import mongoose from 'mongoose';
 
 // import authRoutes from './routes/authRoutes.js';
 import apiRoutes from './routes/apiRoutes.js';
 
+dotenv.config({ path: path.resolve(import.meta.dirname, '../.env') });
+
+mongoose.connect(process.env.CONNECTION_STRING)
+    .then(console.log('Connesso a server MongoDB'))
+    .catch((error) => console.log('Errore connessione a server MongoDB:\n', error));
 
 const app = express();
 
@@ -27,13 +34,13 @@ app.use((req, res, next) => {
 });
 
 
-app.use(express.static(join(import.meta.dirname, '../dist')));
+app.use(express.static(path.join(import.meta.dirname, '../dist')));
 
 // app.use('/api/auth', authRoutes);
 app.use('/api/health', apiRoutes);
 
 app.get('{/*path}', (req, res) => {
-    res.sendFile(join(import.meta.dirname, '../dist', 'index.html'));
+    res.sendFile(path.join(import.meta.dirname, '../dist', 'index.html'));
 });
 
 const server = app.listen(app.get('port'), () => {
