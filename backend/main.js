@@ -4,8 +4,9 @@ import path from 'node:path';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
-// import authRoutes from './routes/authRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 import apiRoutes from './routes/apiRoutes.js';
 
 
@@ -17,19 +18,20 @@ mongoose.connect(process.env.CONNECTION_STRING, {
     .then(() => console.log('Connesso a server MongoDB'))
     .catch((error) => console.log('Errore connessione a server MongoDB:\n', error));
 
+    
+const app = express();
+
 app.use(cors({
     origin: process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : process.env.FRONTEND_URL, // URL Frontend
     credentials: true                // Permette l'invio dei Cookie HTTP-only
 }));
-
-
-const app = express();
 
 app.set('port', process.env.PORT || 3000);
 app.set('appName', 'Benessere e Salute');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser()); // Per leggere i cookie ricevuti con req.cookies
 
 app.use((req, res, next) => {
     console.log(`--- Log Richiesta ---`);
@@ -47,7 +49,7 @@ app.use((req, res, next) => {
 
 app.use(express.static(path.join(import.meta.dirname, '../dist')));
 
-// app.use('/api/auth', authRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/health', apiRoutes);
 
 app.get('{/*path}', (req, res) => {

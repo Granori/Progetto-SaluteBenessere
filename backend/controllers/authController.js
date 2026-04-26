@@ -1,7 +1,24 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
+import { User } from '../models/user.js';
 import { getUserByEmail } from '../data_access/user.js';
+
+
+const setupCookie = (user, res) => {
+    // Crea il Token
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_DURATA || '1h' });
+
+    // Prepara il Cookie
+    res.cookie('token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production', 
+        sameSite: 'lax', // con strict invia il cookie solo alle richieste del dominio del server
+        // maxAge: 1000 * 60 * 60 // se non specificato termina alla fine della sessione
+    });
+
+    return token;
+}
 
 export const login = async (req, res) => {
     try {
@@ -17,20 +34,44 @@ export const login = async (req, res) => {
             return res.status(401).json({ successo: false, message: "Credenziali errate" });
         }
     
-        // Crea il Token
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_DURATA || '1h' });
+        setupCookie(user, res);
     
-        // Prepara il Cookie
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production', 
-            sameSite: 'lax', // con strict invia il cookie solo alle richieste del dominio del server
-            // maxAge: 1000 * 60 * 60 // se non specificato termina alla fine della sessione
-        });
-    
-        res.json({ successo: true, message: "Successo", ruolo: user.ruolo });
+        res.status(200).json({ successo: true, message: "Successo", ruolo: user.ruolo });
 
     } catch (error) {
-        res.status(500).json({ message: "Errore nel server" });
+        res.status(500).json({ successo: false, message: "Errore nel server" });
+    }
+}
+
+export const register = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        if (!email || !password) {
+            return res.status(400).json({ successo: false, message: "Campi mancanti" });
+        }
+        const newUser = new User({
+            email: email,
+            password: password,
+            ruolo: "user"
+        });
+
+        await newUser.save();
+        
+        setupCookie(newUser, res);
+
+        res.status(201).json({ successo: true, message: "Successo" });
+
+    } catch (err) {
+        // Codice MongoDB chiave duplicata
+        if (err.code === 11000) {
+            return res.status(400).json({ successo: false, message: "Email già registrata" });
+        }
+
+        if (err.name === "ValidationError") {
+            return res.status(400).json({ successo: false, message: "Dati non validi" });
+        }
+
+        res.status(500).json({ successo: false, message: "Errore interno del server" });
     }
 }
