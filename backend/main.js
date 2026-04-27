@@ -49,6 +49,8 @@ app.use((req, res, next) => {
 
 app.use(express.static(path.join(import.meta.dirname, '../dist')));
 
+// app.use(checkAuth);
+
 app.use('/api/auth', authRoutes);
 app.use('/api/health', apiRoutes);
 

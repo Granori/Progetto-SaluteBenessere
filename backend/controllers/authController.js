@@ -13,6 +13,7 @@ const setupCookie = (user, res) => {
     res.cookie('token', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production', 
+        path: '/',
         sameSite: 'lax', // con strict invia il cookie solo alle richieste del dominio del server
         // maxAge: 1000 * 60 * 60 // se non specificato termina alla fine della sessione
     });
@@ -74,4 +75,25 @@ export const register = async (req, res) => {
 
         res.status(500).json({ successo: false, message: "Errore interno del server" });
     }
+}
+
+export const logout = async (req, res) => {
+    try {
+        // I parametri del cookie da eliminare devo corrispondere al cookie del token
+        res.clearCookie('token', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production', 
+            path: '/',
+            sameSite: 'lax'
+        });
+
+        res.status(200).json({ successo: true, message: "Cookie eliminato con successo" });
+
+    } catch (error) {
+        res.status(500).json({ successo: false, message: "Errore eliminazione Cookie" });
+    }
+}
+
+export const checkAuth = async (req, res) => {
+    
 }
