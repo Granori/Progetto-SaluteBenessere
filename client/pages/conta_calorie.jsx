@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 
-export default function PagConta() {
+export default function PagConta({ userStatus }) {
     const [selectedImage, setSelectedImage] = useState(null);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [foodData, setFoodData] = useState(null);

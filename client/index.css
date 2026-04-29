@@ -16,6 +16,7 @@
   --color-errore-shadow: var(--color-red-100);
   --color-bordo-errore: var(--color-red-400);
   --color-testo-errore: var(--color-red-500);
+  --color-sfondo-errore: var(--color-red-200);
 
   --color-card: var(--color-white);
   --color-bordo: var(--color-slate-100);
@@ -45,6 +46,7 @@
   --color-errore-shadow: var(--color-red-900);
   --color-bordo-errore: var(--color-red-400);
   --color-testo-errore: var(--color-red-500);
+  --color-sfondo-errore: var(--color-red-200);
 
   --color-card: var(--color-slate-800);
   --color-bordo: var(--color-slate-800);

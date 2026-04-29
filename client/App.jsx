@@ -1,11 +1,44 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, NavLink } from 'react-router-dom';
 import { useState, useEffect } from "react";
 import Navbar from './pages/navbar';
 import Home from './pages/home';
 import PagBMI from './pages/bmi';
 import PagCalorie from './pages/conta_calorie';
+import PagLogin from './pages/login';
 
 function App() {
+  const [isLogged, setIsLogged] = useState(null);
+
+  const verifyAuth = async () => {
+    try {
+      const response = await fetch('/api/auth/check_auth', {
+        method: 'POST',
+        credentials: 'include',
+      });
+      setIsLogged(response.ok);
+    } catch {
+      setIsLogged(false);
+    }
+  };
+
+  useEffect(() => {
+    verifyAuth();
+  }, []); // Controllo al primo caricamento
+
+  const logout = async () => {
+    try {
+      const response = await fetch('api/auth/logout', {
+        method: 'POST',
+        credentials: 'include'
+      });
+
+      const data = await response.json();
+      setIsLogged(!data.successo);
+    } catch (error) {
+      // console.log(error);
+    }
+  }
+
   const [isOpenSettings, setIsOpenSettings] = useState(false);
   
   const [isDark, setIsDark] = useState(() => {
@@ -23,11 +56,11 @@ function App() {
   return (
     <Router>
       <div className={`${isDark && "dark"} min-h-screen bg-sfondo text-testo font-sans`}>
-        <Navbar openSettings={() => setIsOpenSettings(true)} />
+        <Navbar userStatus={isLogged} logout={logout} openSettings={() => setIsOpenSettings(true)} />
         
         { isOpenSettings && 
           <div onClick={() => setIsOpenSettings(false)} className="z-10 fixed inset-0 bg-black/25">
-            <div onClick={(e) => e.stopPropagation()} className="bg-card border-bordo shadow-ombra w-full flex flex-col gap-8 justify-between p-4 md:w-150 h-100 z-20 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-2 shadow-lg rounded-md">
+            <div onClick={(e) => e.stopPropagation()} className="bg-card border-bordo shadow-ombra w-full flex flex-col gap-8 p-4 md:w-150 h-100 z-20 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-2 shadow-lg rounded-md">
               
               <div onClick={() => setIsOpenSettings(false)} className='text-icona absolute top-3 right-3 cursor-pointer'>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="size-8">
@@ -80,7 +113,19 @@ function App() {
 
               </div>
 
-              <div className='mt-auto'>Accedi</div>
+              { !isLogged ?
+                <div className="flex justify-center mt-auto">
+                  <NavLink to='/login' className="bg-pulsante text-testo-affine hover:bg-verde-hover hover:shadow-verde-shadow w-full max-w-50 py-4 font-black rounded-xl shadow-lg transition-all duration-300 uppercase tracking-widest text-center cursor-pointer">
+                    Accedi
+                  </NavLink>
+                </div>
+                :
+                <div className="flex justify-center mt-auto">
+                  <button onClick={logout} className="bg-pulsante text-testo-affine hover:bg-verde-hover hover:shadow-verde-shadow w-full max-w-50 py-4 font-black rounded-xl shadow-lg transition-all duration-300 uppercase tracking-widest text-center cursor-pointer">
+                    Logout
+                  </button>
+                </div>
+              }
 
             </div>
 
@@ -88,11 +133,13 @@ function App() {
         }
 
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home userStatus={isLogged} />} />
           <Route path="/home" element={<Navigate to="/" replace />} />
 
-          <Route path="/calcolatorebmi" element={<PagBMI />} />
-          <Route path="/contacalorie" element={<PagCalorie />} />
+          <Route path="/calcolatorebmi" element={<PagBMI userStatus={isLogged} />} />
+          <Route path="/contacalorie" element={<PagCalorie userStatus={isLogged} />} />
+
+          <Route path="/login" element={<PagLogin userStatus={isLogged} verificaAuth={verifyAuth} />} />
 
           <Route path="*" element={<h1>Error 404</h1>} />
         </Routes>

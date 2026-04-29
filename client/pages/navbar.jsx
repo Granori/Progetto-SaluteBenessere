@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import NavbarLinks from "./navbar_link";
 import { NavLink } from "react-router-dom";
 
-export default function Navbar({ openSettings }) {
+export default function Navbar({ userStatus, logout, openSettings }) {
     const [isOpenHamb, setIsOpenHamb] = useState(false);
     const [isOpenProfilo, setIsOpenProfilo] = useState(false);
     const [isOpenImp, setIsOpenImp] = useState(false);
@@ -60,10 +60,18 @@ export default function Navbar({ openSettings }) {
                 <div className="overflow-hidden">
                     <div className="px-4 border-b border-testo-opaco py-4 space-y-2">
                         <div className="flex flex-col gap-6 md:gap-8 text-sm font-bold uppercase tracking-widest text-testo-nav">
-                            <NavLink to='/login'
-                                className="cursor-pointer hover:border-b-2 hover:border-verde hover:text-verde-hover transition">
-                                Accedi
-                            </NavLink>
+                            { !userStatus ?
+                                <NavLink to='/login'
+                                    className="cursor-pointer hover:border-b-2 hover:border-verde hover:text-verde-hover transition">
+                                    Accedi
+                                </NavLink>
+                                :
+                                <button onClick={logout}
+                                    className="cursor-pointer hover:border-b-2 hover:border-verde hover:text-verde-hover transition">
+                                    Logout
+                                </button>
+                            }
+                            
                             <div onClick={ () => {openSettings(); setIsOpenProfilo(false); } } className="cursor-pointer hover:border-b-2 hover:border-verde hover:text-verde-hover transition">
                                 Impostazioni
                             </div>

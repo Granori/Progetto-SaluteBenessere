@@ -3,7 +3,7 @@ import FormInput from "./input_bmi";
 import LoadingSpin from "./caricamento";
 const regNumerico = /^[0-9]+$/;
 
-export default function PagBMI() {
+export default function PagBMI({ userStatus }) {
     const [peso, setPeso] = useState("");
     const [altezza, setAltezza] = useState("");
     const [errors, setErrors] = useState({});
@@ -34,6 +34,14 @@ export default function PagBMI() {
             nuoviErrori.altezza = "Inserisci un'altezza valida";
         }
 
+        setAttesa(true); // Spinner
+
+        if (!userStatus) {
+            console.log(userStatus);
+            nuoviErrori.account = "Esegui l'accesso per poter calcolare il tuo BMI";
+            setAttesa(false);
+        }
+
         // Guardo che ci siano errori
         if (Object.keys(nuoviErrori).length > 0) {
             setErrors(nuoviErrori); // Aggiungo gli errori
@@ -41,7 +49,6 @@ export default function PagBMI() {
         }
         setErrors({}); // Svuoto gli errori
 
-        setAttesa(true);
         const datiBMI = { peso, altezza };
         try {
             const response = await fetch('/api/health/bmi', {
@@ -107,6 +114,18 @@ export default function PagBMI() {
                         <LoadingSpin color="border-blue-600" size="w-10 h-10" /> 
                     </div>
                 }
+                { !userStatus && errors.account && (
+                    <div className="absolute left-1/2 -translate-x-1/2 bottom-full">
+                        <div className="flex items-center gap-2 px-4 py-2 bg-sfondo-errore border border-bordo-errore text-testo-errore text-sm rounded-lg shadow-lg">
+                            {/* Icona opzionale (puoi usare un SVG o Lucide-react) */}
+                            <svg xmlns="http://w3.org" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span className="font-medium">{errors.account}</span>
+                        </div>
+                        
+                    </div>
+                )}
 
                 {/* Contenitore principale con padding superiore per dare spazio all'etichetta */}
                 <div className="relative pb-4">

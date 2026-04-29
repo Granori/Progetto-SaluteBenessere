@@ -5,5 +5,5 @@ export const getUserByEmail = async (email) => {
 }
 
 export const getUserById = async (id) => {
-    return await User.findById({ id: id });
+    return await User.findById(id).select("-password"); // -password non prende la password
 }

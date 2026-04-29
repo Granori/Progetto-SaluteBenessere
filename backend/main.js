@@ -9,7 +9,7 @@ import cookieParser from 'cookie-parser';
 import authRoutes from './routes/authRoutes.js';
 import apiRoutes from './routes/apiRoutes.js';
 
-import { checkAuth } from './controllers/authController.js';
+import { checkAuth } from './middleware/authMiddleware.js';
 
 dotenv.config({ path: path.resolve(import.meta.dirname, '../.env') });
 

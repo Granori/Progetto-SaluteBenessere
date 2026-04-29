@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export default function HomePage() {
+export default function HomePage({ userStatus }) {
     return (
         <main className="max-w-6xl mx-auto px-6">
             <section className="grow flex flex-col lg:flex-row items-center justify-center gap-12 py-12">
