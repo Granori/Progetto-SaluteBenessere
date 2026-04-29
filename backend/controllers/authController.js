@@ -94,6 +94,6 @@ export const logout = async (req, res) => {
     }
 }
 
-export const checkAuth = async (req, res) => {
-    
+export const authMe = async (req, res) => {
+    res.status(200).json({ successo: true, message: "Autenticato" })
 }

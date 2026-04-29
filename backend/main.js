@@ -9,6 +9,7 @@ import cookieParser from 'cookie-parser';
 import authRoutes from './routes/authRoutes.js';
 import apiRoutes from './routes/apiRoutes.js';
 
+import { checkAuth } from './controllers/authController.js';
 
 dotenv.config({ path: path.resolve(import.meta.dirname, '../.env') });
 
@@ -47,12 +48,13 @@ app.use((req, res, next) => {
 });
 
 
-app.use(express.static(path.join(import.meta.dirname, '../dist')));
-
 // app.use(checkAuth);
 
 app.use('/api/auth', authRoutes);
 app.use('/api/health', apiRoutes);
+
+app.use(express.static(path.join(import.meta.dirname, '../dist')));
+
 
 app.get('{/*path}', (req, res) => {
     res.sendFile(path.join(import.meta.dirname, '../dist', 'index.html'));
