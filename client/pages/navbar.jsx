@@ -66,15 +66,15 @@ export default function Navbar({ userStatus, logout, openSettings }) {
                                     Accedi
                                 </NavLink>
                                 :
-                                <button onClick={logout}
+                                <NavLink to='#' onClick={() => {logout(); setIsOpenProfilo(false)}}
                                     className="cursor-pointer hover:border-b-2 hover:border-verde hover:text-verde-hover transition">
                                     Logout
-                                </button>
+                                </NavLink>
                             }
                             
-                            <div onClick={ () => {openSettings(); setIsOpenProfilo(false); } } className="cursor-pointer hover:border-b-2 hover:border-verde hover:text-verde-hover transition">
+                            <NavLink to='#' onClick={ () => {openSettings(); setIsOpenProfilo(false); } } className="cursor-pointer hover:border-b-2 hover:border-verde hover:text-verde-hover transition">
                                 Impostazioni
-                            </div>
+                            </NavLink>
                         </div>
 
                     </div>

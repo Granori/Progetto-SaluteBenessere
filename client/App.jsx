@@ -121,7 +121,7 @@ function App() {
                 </div>
                 :
                 <div className="flex justify-center mt-auto">
-                  <button onClick={logout} className="bg-pulsante text-testo-affine hover:bg-verde-hover hover:shadow-verde-shadow w-full max-w-50 py-4 font-black rounded-xl shadow-lg transition-all duration-300 uppercase tracking-widest text-center cursor-pointer">
+                  <button onClick={() => {logout(); setIsOpenSettings(false)}} className="bg-pulsante text-testo-affine hover:bg-verde-hover hover:shadow-verde-shadow w-full max-w-50 py-4 font-black rounded-xl shadow-lg transition-all duration-300 uppercase tracking-widest text-center cursor-pointer">
                     Logout
                   </button>
                 </div>
