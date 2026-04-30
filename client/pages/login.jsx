@@ -11,6 +11,22 @@ export default function Login({ userStatus, verificaAuth }) {
         e.preventDefault();
         setError(null);
 
+        if (!email.trim()) {
+            setError("Inserisci un indirizzo email.");
+            return;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            setError("Formato email non valido.");
+            return;
+        }
+
+        if (password.length < 1) {
+            setError("La password è obbligatoria.");
+            return;
+        }
+
         const res = await fetch('/api/auth/login', {
             method: 'POST',
             headers: {
@@ -34,7 +50,6 @@ export default function Login({ userStatus, verificaAuth }) {
     return (
         <main className="max-w-6xl mx-auto px-6 min-h-[80vh] flex items-center justify-center">
             <section className="w-full max-w-md">
-                {/* Header della Card */}
                 <div className="text-center mb-10 space-y-4">
                     <div className="bg-verde-sfondo inline-block px-4 py-1.5 rounded-full">
                         <span className="text-verde text-sm lg:text-xs font-black uppercase tracking-[0.2em]">
@@ -47,9 +62,9 @@ export default function Login({ userStatus, verificaAuth }) {
                     </h1>
                 </div>
 
-                {/* Form Card */}
                 <div className="bg-card border-bordo-nav shadow-ombra rounded-[40px] p-8 lg:p-10 border">
-                    <form onSubmit={handleLogin} className="space-y-6">
+                    {/* Aggiunto noValidate per disabilitare i controlli automatici di HTML5 */}
+                    <form onSubmit={handleLogin} className="space-y-6" noValidate>
                         
                         {error && (
                             <div className="bg-red-50 text-red-500 text-sm p-4 rounded-2xl border border-red-100 text-center font-medium">
@@ -62,12 +77,11 @@ export default function Login({ userStatus, verificaAuth }) {
                                 Email
                             </label>
                             <input 
-                                type="email" 
+                                type="text" /* Cambiato da email a text per gestire tutto noi */
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder="test@progetto.it"
                                 className="w-full px-6 py-4 rounded-2xl bg-emerald-50/30 border border-emerald-100 focus:outline-none focus:ring-2 focus:ring-verde/20 focus:border-verde transition-all"
-                                required
                             />
                         </div>
 
@@ -81,7 +95,6 @@ export default function Login({ userStatus, verificaAuth }) {
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="••••••••"
                                 className="w-full px-6 py-4 rounded-2xl bg-emerald-50/30 border border-emerald-100 focus:outline-none focus:ring-2 focus:ring-verde/20 focus:border-verde transition-all"
-                                required
                             />
                         </div>
 
@@ -105,7 +118,6 @@ export default function Login({ userStatus, verificaAuth }) {
                     </div>
                 </div>
 
-                {/* Piccolo decoro sotto la card per coerenza con lo stile */}
                 <div className="mt-8 flex justify-center opacity-30">
                     <svg className="w-8 h-8 text-verde" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />

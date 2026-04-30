@@ -5,35 +5,45 @@ export default function PagConta({ userStatus }) {
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [foodData, setFoodData] = useState(null);
     const [manualName, setManualName] = useState(""); 
-    const [grams, setGrams] = useState(""); // Nuovo stato per la quantità
+    const [grams, setGrams] = useState(""); 
+    const [errorMsg, setErrorMsg] = useState(null); // Stato per l'errore
     const fileInputRef = useRef(null);
 
     const API_KEY = "0a8c7f66e7f3453c8c66ded897284ea1";
 
     const fetchNutritionByName = async (name, weight) => {
         setIsAnalyzing(true);
+        setErrorMsg(null); // Resetta errori precedenti
+        setFoodData(null); // Pulisce dati precedenti durante l'analisi
+
         try {
-            // Se c'è un peso, lo concateniamo al nome (es: "400g pizza")
-            // Altrimenti mandiamo solo il nome (default dell'API)
-            const query = weight ? `${weight}g ${name}` : name;
-            
             const response = await fetch(
-                `https://api.spoonacular.com/recipes/guessNutrition?apiKey=${API_KEY}&title=${encodeURIComponent(query)}`
+                `https://api.spoonacular.com/recipes/guessNutrition?apiKey=${API_KEY}&title=${encodeURIComponent(name)}`
             );
+
+            if (!response.ok) throw new Error("Errore di rete o API");
+
             const data = await response.json();
 
-            if (data && data.calories) {
+            // Controllo se l'API ha effettivamente trovato qualcosa
+            // Spoonacular a volte risponde con successo ma valori a 0 o messaggi di errore
+            if (data && data.calories && data.calories.value > 0) {
+                const ratio = weight ? parseFloat(weight) / 100 : 1;
+
                 setFoodData({
                     nome: weight ? `${name} (${weight}g)` : name,
-                    calorie: Math.round(data.calories.value || 0),
-                    proteine: `${Math.round(data.protein?.value || 0)}g`,
-                    carboidrati: `${Math.round(data.carbs?.value || 0)}g`,
-                    grassi: `${Math.round(data.fat?.value || 0)}g`,
+                    calorie: Math.round((data.calories.value || 0)*ratio),
+                    proteine: `${Math.round((data.protein?.value || 0)*ratio)}g`,
+                    carboidrati: `${Math.round((data.carbs?.value || 0)*ratio)}g`,
+                    grassi: `${Math.round((data.fat?.value || 0)*ratio)}g`,
                     status: weight ? `Dati calcolati per ${weight}g` : "Dati per porzione standard"
                 });
+            } else {
+                setErrorMsg("Spiacenti, non abbiamo trovato dati nutrizionali per questo piatto. Prova a essere più specifico.");
             }
         } catch (error) {
             console.error("Errore:", error);
+            setErrorMsg("Si è verificato un errore durante l'analisi. Riprova più tardi.");
         } finally {
             setIsAnalyzing(false);
         }
@@ -41,7 +51,10 @@ export default function PagConta({ userStatus }) {
 
     const handleManualSearch = (e) => {
         e.preventDefault();
-        if (!manualName.trim()) return;
+        if (!manualName.trim()) {
+            setErrorMsg("Inserisci il nome di un piatto.");
+            return;
+        }
         fetchNutritionByName(manualName, grams);
     };
 
@@ -50,6 +63,7 @@ export default function PagConta({ userStatus }) {
         setFoodData(null);
         setManualName("");
         setGrams("");
+        setErrorMsg(null);
     };
 
     return (
@@ -75,7 +89,6 @@ export default function PagConta({ userStatus }) {
                                 
                                 <form onSubmit={handleManualSearch} className="space-y-4">
                                     <div className="flex flex-col md:flex-row gap-4 max-w-md mx-auto lg:mx-0">
-                                        {/* Nome Cibo */}
                                         <input 
                                             type="text"
                                             value={manualName}
@@ -83,7 +96,6 @@ export default function PagConta({ userStatus }) {
                                             placeholder="Es: Pizza Margherita"
                                             className="flex-[2] px-6 py-4 rounded-2xl border-2 border-bordo-nav bg-card text-testo focus:border-verde outline-none transition-all shadow-sm font-medium"
                                         />
-                                        {/* Grammi */}
                                         <input 
                                             type="number"
                                             value={grams}
@@ -93,6 +105,13 @@ export default function PagConta({ userStatus }) {
                                         />
                                     </div>
                                     
+                                    {/* --- MESSAGGIO DI ERRORE --- */}
+                                    {errorMsg && (
+                                        <div className="max-w-md bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl text-sm font-medium">
+                                            {errorMsg}
+                                        </div>
+                                    )}
+
                                     <div className="flex flex-wrap justify-center lg:justify-start gap-4">
                                         <button 
                                             type="button"
@@ -129,7 +148,6 @@ export default function PagConta({ userStatus }) {
                         )}
                     </div>
 
-                    {/* Box Immagine Anteprima */}
                     <div className="flex-1 w-full max-w-[320px] md:max-w-100 lg:max-w-110">
                         <div className="relative bg-card rounded-[60px] aspect-[4/5] overflow-hidden border border-bordo-nav shadow-2xl transition-transform duration-500">
                             {selectedImage ? (
@@ -153,7 +171,6 @@ export default function PagConta({ userStatus }) {
                     </div>
                 </section>
 
-                {/* --- RISULTATI --- */}
                 {foodData && (
                     <section className="mt-12 pt-12 border-t border-bordo-nav animate-fade-in">
                         <h2 className="text-testo-opaco-2 text-center text-2xl lg:text-3xl font-black mb-12 uppercase tracking-widest">
