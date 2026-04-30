@@ -5,26 +5,31 @@ export default function PagConta({ userStatus }) {
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [foodData, setFoodData] = useState(null);
     const [manualName, setManualName] = useState(""); 
+    const [grams, setGrams] = useState(""); // Nuovo stato per la quantità
     const fileInputRef = useRef(null);
 
     const API_KEY = "0a8c7f66e7f3453c8c66ded897284ea1";
 
-    const fetchNutritionByName = async (name) => {
+    const fetchNutritionByName = async (name, weight) => {
         setIsAnalyzing(true);
         try {
+            // Se c'è un peso, lo concateniamo al nome (es: "400g pizza")
+            // Altrimenti mandiamo solo il nome (default dell'API)
+            const query = weight ? `${weight}g ${name}` : name;
+            
             const response = await fetch(
-                `https://api.spoonacular.com/recipes/guessNutrition?apiKey=${API_KEY}&title=${encodeURIComponent(name)}`
+                `https://api.spoonacular.com/recipes/guessNutrition?apiKey=${API_KEY}&title=${encodeURIComponent(query)}`
             );
             const data = await response.json();
 
             if (data && data.calories) {
                 setFoodData({
-                    nome: name,
-                    calorie: Math.round(data.calories.value || data.calories || 0),
-                    proteine: `${data.protein?.value || data.protein || 0}g`,
-                    carboidrati: `${data.carbs?.value || data.carbs || 0}g`,
-                    grassi: `${data.fat?.value || data.fat || 0}g`,
-                    status: "Dati basati sul nome inserito"
+                    nome: weight ? `${name} (${weight}g)` : name,
+                    calorie: Math.round(data.calories.value || 0),
+                    proteine: `${Math.round(data.protein?.value || 0)}g`,
+                    carboidrati: `${Math.round(data.carbs?.value || 0)}g`,
+                    grassi: `${Math.round(data.fat?.value || 0)}g`,
+                    status: weight ? `Dati calcolati per ${weight}g` : "Dati per porzione standard"
                 });
             }
         } catch (error) {
@@ -34,26 +39,20 @@ export default function PagConta({ userStatus }) {
         }
     };
 
-    const handleImageUpload = (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        setSelectedImage(URL.createObjectURL(file));
-    };
-
     const handleManualSearch = (e) => {
         e.preventDefault();
         if (!manualName.trim()) return;
-        fetchNutritionByName(manualName);
+        fetchNutritionByName(manualName, grams);
     };
 
     const resetAnalyzer = () => {
         setSelectedImage(null);
         setFoodData(null);
         setManualName("");
+        setGrams("");
     };
 
     return (
-        /* FIX TEMA DARK + SCROLL: Usiamo min-h-screen senza colori hex fissi */
         <div className="min-h-screen w-full transition-colors duration-300"> 
             <main className="max-w-6xl mx-auto px-6 pb-24">
                 <section className="flex flex-col lg:flex-row items-center justify-center gap-12 py-12 md:py-20">
@@ -71,17 +70,26 @@ export default function PagConta({ userStatus }) {
                         {!foodData ? (
                             <div className="space-y-6">
                                 <p className="text-testo-nav text-lg leading-relaxed max-w-lg mx-auto lg:mx-0">
-                                    Carica una foto e inserisci il nome del piatto per ottenere i dati nutrizionali precisi.
+                                    Inserisci il piatto e la quantità (opzionale) per un'analisi dettagliata.
                                 </p>
                                 
                                 <form onSubmit={handleManualSearch} className="space-y-4">
-                                    <div className="relative max-w-md mx-auto lg:mx-0">
+                                    <div className="flex flex-col md:flex-row gap-4 max-w-md mx-auto lg:mx-0">
+                                        {/* Nome Cibo */}
                                         <input 
                                             type="text"
                                             value={manualName}
                                             onChange={(e) => setManualName(e.target.value)}
-                                            placeholder="Esempio: Pasta alla carbonara..."
-                                            className="w-full px-6 py-4 rounded-2xl border-2 border-bordo-nav bg-card text-testo focus:border-verde outline-none transition-all shadow-sm font-medium"
+                                            placeholder="Es: Pizza Margherita"
+                                            className="flex-[2] px-6 py-4 rounded-2xl border-2 border-bordo-nav bg-card text-testo focus:border-verde outline-none transition-all shadow-sm font-medium"
+                                        />
+                                        {/* Grammi */}
+                                        <input 
+                                            type="number"
+                                            value={grams}
+                                            onChange={(e) => setGrams(e.target.value)}
+                                            placeholder="Grammi"
+                                            className="flex-1 px-4 py-4 rounded-2xl border-2 border-bordo-nav bg-card text-testo focus:border-verde outline-none transition-all shadow-sm font-medium"
                                         />
                                     </div>
                                     
@@ -102,11 +110,15 @@ export default function PagConta({ userStatus }) {
                                             {isAnalyzing ? "Analisi..." : "Analizza Piatto"}
                                         </button>
                                     </div>
-                                    <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handleImageUpload} />
+                                    <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={(e) => {
+                                        const file = e.target.files[0];
+                                        if (file) setSelectedImage(URL.createObjectURL(file));
+                                    }} />
                                 </form>
                             </div>
                         ) : (
-                            <div className="pt-4">
+                            <div className="pt-4 flex flex-col items-center lg:items-start gap-4">
+                                <p className="text-testo-nav italic">{foodData.status}</p>
                                 <button 
                                     onClick={resetAnalyzer}
                                     className="bg-transparent border-2 border-verde text-verde hover:bg-verde-sfondo px-8 lg:px-10 py-4 lg:py-5 rounded-2xl font-bold uppercase tracking-widest text-[10px] lg:text-xs transition-all active:scale-95"
