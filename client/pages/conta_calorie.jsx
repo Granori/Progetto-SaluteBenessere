@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import LoadingSpin from "./caricamento";
 
 export default function PagConta({ userStatus }) {
     const [selectedImage, setSelectedImage] = useState(null);
@@ -9,44 +10,53 @@ export default function PagConta({ userStatus }) {
     const [errorMsg, setErrorMsg] = useState(null); // Stato per l'errore
     const fileInputRef = useRef(null);
 
-    const API_KEY = "0a8c7f66e7f3453c8c66ded897284ea1";
+    const [caricamento, setCaricamento] = useState(false);
 
     const fetchNutritionByName = async (name, weight) => {
         setIsAnalyzing(true);
         setErrorMsg(null); // Resetta errori precedenti
         setFoodData(null); // Pulisce dati precedenti durante l'analisi
 
+        setCaricamento(true);
         try {
-            const response = await fetch(
-                `https://api.spoonacular.com/recipes/guessNutrition?apiKey=${API_KEY}&title=${encodeURIComponent(name)}`
-            );
+            const res = await fetch('/api/health/nutritional_values', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "name": name,
+                    "weight": weight
+                }),
+                credentials: 'include' 
+            });
 
-            if (!response.ok) throw new Error("Errore di rete o API");
+            const data = await res.json();
 
-            const data = await response.json();
-
-            // Controllo se l'API ha effettivamente trovato qualcosa
-            // Spoonacular a volte risponde con successo ma valori a 0 o messaggi di errore
-            if (data && data.calories && data.calories.value > 0) {
-                const ratio = weight ? parseFloat(weight) / 100 : 1;
+            if (res.ok) {
+                const values = data.values;
 
                 setFoodData({
-                    nome: weight ? `${name} (${weight}g)` : name,
-                    calorie: Math.round((data.calories.value || 0)*ratio),
-                    proteine: `${Math.round((data.protein?.value || 0)*ratio)}g`,
-                    carboidrati: `${Math.round((data.carbs?.value || 0)*ratio)}g`,
-                    grassi: `${Math.round((data.fat?.value || 0)*ratio)}g`,
-                    status: weight ? `Dati calcolati per ${weight}g` : "Dati per porzione standard"
+                    nome: values.nome,
+                    calorie: values.calorie,
+                    proteine: values.proteine,
+                    carboidrati: values.carboidrati,
+                    grassi: values.grassi,
+                    status: values.status
                 });
-            } else {
-                setErrorMsg("Spiacenti, non abbiamo trovato dati nutrizionali per questo piatto. Prova a essere più specifico.");
             }
+            else {
+                setErrorMsg(data.message);
+            }
+            
         } catch (error) {
             console.error("Errore:", error);
             setErrorMsg("Si è verificato un errore durante l'analisi. Riprova più tardi.");
         } finally {
             setIsAnalyzing(false);
         }
+
+        setCaricamento(false);
     };
 
     const handleManualSearch = (e) => {
@@ -170,30 +180,40 @@ export default function PagConta({ userStatus }) {
                         </div>
                     </div>
                 </section>
-
-                {foodData && (
-                    <section className="mt-12 pt-12 border-t border-bordo-nav animate-fade-in">
-                        <h2 className="text-testo-opaco-2 text-center text-2xl lg:text-3xl font-black mb-12 uppercase tracking-widest">
-                            Analisi Nutrizionale
-                        </h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-                            {[
-                                { label: "Calorie", val: foodData.calorie, unit: "kcal", color: "bg-orange-400", bg: "bg-orange-400/10" },
-                                { label: "Proteine", val: foodData.proteine, unit: "", color: "bg-blue-400", bg: "bg-blue-400/10" },
-                                { label: "Carboidrati", val: foodData.carboidrati, unit: "", color: "bg-amber-400", bg: "bg-amber-400/10" },
-                                { label: "Grassi", val: foodData.grassi, unit: "", color: "bg-red-400", bg: "bg-red-400/10" }
-                            ].map((item, idx) => (
-                                <div key={idx} className="group bg-card border-bordo-nav shadow-ombra rounded-[30px] p-8 border hover:shadow-2xl transition-all duration-500">
-                                    <div className={`w-12 h-12 ${item.bg} rounded-2xl flex items-center justify-center mb-6`}>
-                                        <div className={`w-5 h-5 ${item.color} rounded-full`} />
-                                    </div>
-                                    <h3 className="text-testo-nav text-sm font-black mb-2 uppercase tracking-tighter">{item.label}</h3>
-                                    <p className="text-3xl lg:text-4xl font-black text-testo">{item.val} <span className="text-lg text-testo-opaco-2 font-medium">{item.unit}</span></p>
-                                </div>
-                            ))}
+                
+                <div className="relative">
+                    {caricamento && !foodData && (
+                        <div className="absolute left-1/2 -translate-x-1/2 bottom-full">
+                            <LoadingSpin color="border-verde" size="w-20 h-20" />
                         </div>
-                    </section>
-                )}
+                    )}
+
+                    {foodData && (
+                        <section className="mt-12 pt-12 border-t border-bordo-nav animate-fade-in">
+                            <h2 className="text-testo-opaco-2 text-center text-2xl lg:text-3xl font-black mb-12 uppercase tracking-widest">
+                                Analisi Nutrizionale
+                            </h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+                                {[
+                                    { label: "Calorie", val: foodData.calorie, unit: "kcal", color: "bg-orange-400", bg: "bg-orange-400/10" },
+                                    { label: "Proteine", val: foodData.proteine, unit: "", color: "bg-blue-400", bg: "bg-blue-400/10" },
+                                    { label: "Carboidrati", val: foodData.carboidrati, unit: "", color: "bg-amber-400", bg: "bg-amber-400/10" },
+                                    { label: "Grassi", val: foodData.grassi, unit: "", color: "bg-red-400", bg: "bg-red-400/10" }
+                                ].map((item, idx) => (
+                                    <div key={idx} className="group bg-card border-bordo-nav shadow-ombra rounded-[30px] p-8 border hover:shadow-2xl transition-all duration-500">
+                                        <div className={`w-12 h-12 ${item.bg} rounded-2xl flex items-center justify-center mb-6`}>
+                                            <div className={`w-5 h-5 ${item.color} rounded-full`} />
+                                        </div>
+                                        <h3 className="text-testo-nav text-sm font-black mb-2 uppercase tracking-tighter">{item.label}</h3>
+                                        <p className="text-3xl lg:text-4xl font-black text-testo">{item.val} <span className="text-lg text-testo-opaco-2 font-medium">{item.unit}</span></p>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+                    )}
+
+                </div>
+                
             </main>
         </div>
     );
