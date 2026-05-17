@@ -8,7 +8,7 @@ TODO.txt
 # Sorgenti React/Vite
 client/
 public/
-index.html
+/index.html
 vite.config.js
 eslint.config.js
 dist-ssr/
