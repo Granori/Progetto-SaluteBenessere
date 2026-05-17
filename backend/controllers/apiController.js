@@ -21,3 +21,5 @@ export const calcolaBMI = (req, res) => {
     const bmi = (p / Math.pow(a / 100, 2)).toFixed(1);
     res.status(200).json(bmi);
 };
+
+export const contaValori = (req, res) => { }

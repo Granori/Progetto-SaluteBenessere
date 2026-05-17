@@ -5,6 +5,8 @@ import Home from './pages/home';
 import PagBMI from './pages/bmi';
 import PagCalorie from './pages/conta_calorie';
 import PagLogin from './pages/login';
+import PagRegister from './pages/register';
+import ScrollToTop from './ScrollToTop';
 
 function App() {
   const [isLogged, setIsLogged] = useState(null);
@@ -55,6 +57,8 @@ function App() {
 
   return (
     <Router>
+      <ScrollToTop />
+
       <div className={`${isDark && "dark"} min-h-screen bg-sfondo text-testo font-sans`}>
         <Navbar userStatus={isLogged} logout={logout} openSettings={() => setIsOpenSettings(true)} />
         
@@ -140,6 +144,7 @@ function App() {
           <Route path="/contacalorie" element={<PagCalorie userStatus={isLogged} />} />
 
           <Route path="/login" element={<PagLogin userStatus={isLogged} verificaAuth={verifyAuth} />} />
+          <Route path="/register" element={<PagRegister userStatus={isLogged} verificaAuth={verifyAuth} />} />
 
           <Route path="*" element={<h1>Error 404</h1>} />
         </Routes>

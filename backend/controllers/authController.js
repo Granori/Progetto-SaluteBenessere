@@ -64,6 +64,8 @@ export const register = async (req, res) => {
         res.status(201).json({ successo: true, message: "Successo" });
 
     } catch (err) {
+        console.log("ERRORE:", error);
+
         // Codice MongoDB chiave duplicata
         if (err.code === 11000) {
             return res.status(400).json({ successo: false, message: "Email già registrata" });

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from 'react-router-dom';
 
-export default function Login({ userStatus, verificaAuth }) {
+export default function Register({ userStatus, verificaAuth }) {
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -27,7 +27,7 @@ export default function Login({ userStatus, verificaAuth }) {
             return;
         }
 
-        const res = await fetch('/api/auth/login', {
+        const res = await fetch('/api/auth/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -43,7 +43,19 @@ export default function Login({ userStatus, verificaAuth }) {
             verificaAuth();
             navigate('/home');
         } else {
-            setError("Credenziali non valide. Riprova.");
+            const dati = await res.json();
+            switch (dati.message) {
+                case "Email già registrata":
+                    setError("Email già registrata");
+                    break;
+
+                case "Dati non validi":
+                    setError("Credenziali non valide");
+            
+                default:
+                    setError("Errore");
+                    break;
+            }
         }
     };
 
@@ -53,11 +65,11 @@ export default function Login({ userStatus, verificaAuth }) {
                 <div className="text-center mb-10 space-y-4">
                     <div className="bg-verde-sfondo inline-block px-4 py-1.5 rounded-full">
                         <span className="text-verde text-sm lg:text-xs font-black uppercase tracking-[0.2em]">
-                            Bentornato
+                            Benvenuto
                         </span>
                     </div>
                     <h1 className="text-4xl font-black leading-tight tracking-tight text-testo">
-                        Accedi al <br />
+                        Registrati al <br />
                         <span className="text-verde">tuo equilibrio.</span>
                     </h1>
                 </div>
@@ -120,10 +132,10 @@ export default function Login({ userStatus, verificaAuth }) {
 
                     <div className="mt-8 text-center">
                         <p className="text-testo-nav text-sm">
-                            Non hai un account? <br />
-                            <NavLink to='/register' 
+                            Hai già un account? <br />
+                            <NavLink to="/login"
                                 className="text-verde font-bold cursor-pointer hover:underline uppercase text-[10px] tracking-widest">
-                                Registrati ora
+                                Accedi ora
                             </NavLink>
                         </p>
                     </div>

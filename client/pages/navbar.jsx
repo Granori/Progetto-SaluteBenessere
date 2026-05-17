@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import NavbarLinks from "./navbar_link";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 
 export default function Navbar({ userStatus, logout, openSettings }) {
+    const location = useLocation();
+
     const [isOpenHamb, setIsOpenHamb] = useState(false);
     const [isOpenProfilo, setIsOpenProfilo] = useState(false);
     const [isOpenImp, setIsOpenImp] = useState(false);
@@ -20,6 +22,10 @@ export default function Navbar({ userStatus, logout, openSettings }) {
         setIsOpenProfilo(false);
     }
 
+    useEffect(() => {
+        closeDropdowns();
+    }, [location]); // Il trigger è il cambio di pagina
+
     return (
         <nav className="w-full bg-nav border-bordo-nav sticky z-50 top-0 border-b-2 text-testo px-10 py-5 items-center shadow-sm">
             <div className="flex justify-between">
@@ -28,7 +34,7 @@ export default function Navbar({ userStatus, logout, openSettings }) {
                 <div className="flex items-center gap-10">
 
                     <div className="hidden md:flex items-center">
-                        <NavbarLinks chiudiMenu={ closeDropdowns }/>
+                        <NavbarLinks />
                     </div>
 
                     <div className="md:hidden">
@@ -51,7 +57,7 @@ export default function Navbar({ userStatus, logout, openSettings }) {
             <div className={`${isOpenHamb ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'} grid md:hidden transition-[grid-template-rows,opacity] duration-300 ease-in-out`}>
                 <div className="overflow-hidden">
                     <div className="px-4 border-b border-testo-opaco py-4 space-y-2">
-                        <NavbarLinks chiudiMenu={ closeDropdowns }/>
+                        <NavbarLinks />
 
                     </div>
                 </div>

@@ -35,6 +35,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser()); // Per leggere i cookie ricevuti con req.cookies
 
 app.use((req, res, next) => {
+    console.log('\n');
+    
     console.log(`--- Log Richiesta ---`);
     console.log(`Metodo: ${req.method}`);
     console.log(`Percorso: ${req.url}`);
@@ -43,7 +45,6 @@ app.use((req, res, next) => {
         console.log('Dati Ricevuti:', req.body);
     }
     
-    console.log('\n');
     next();
 });
 
