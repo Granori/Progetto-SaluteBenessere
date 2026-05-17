@@ -6,7 +6,7 @@ import { calcolaBMI, contaValori } from '../controllers/apiController.js';
 
 const router = express.Router();
 
-router.post('/bmi', checkAuth, calcolaBMI);
-router.post('/nutritional_values', checkAuth, contaValori);
+router.post('/bmi', calcolaBMI);
+router.post('/nutritional_values', contaValori);
 
 export default router;
