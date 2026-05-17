@@ -7,7 +7,7 @@
   "type": "module",
   "main": "main.js",
   "scripts": {
-    "test": "node ./backend/main.js"
+    "start": "node ./backend/main.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
