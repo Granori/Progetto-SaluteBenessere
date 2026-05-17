@@ -1,4 +1,16 @@
 .env
+.env.esempio
+
+pizza.jpg
+banana.webp
+
+# Sorgenti React/Vite
+client/
+public/
+index.html
+vite.config.js
+eslint.config.js
+dist-ssr/
 
 # Logs
 logs
@@ -10,8 +22,7 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-dist
-dist-ssr
+
 *.local
 
 # Editor directories and files
