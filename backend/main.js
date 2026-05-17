@@ -23,7 +23,7 @@ mongoose.connect(process.env.CONNECTION_STRING, {
 const app = express();
 
 app.use(cors({
-    origin: process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : process.env.FRONTEND_URL, // URL Frontend
+    origin: process.env.FRONTEND_URL, // URL Frontend
     credentials: true                // Permette l'invio dei Cookie HTTP-only
 }));
 
@@ -62,5 +62,5 @@ app.get('{/*path}', (req, res) => {
 });
 
 const server = app.listen(app.get('port'), () => {
-    console.log(`Server in ascolto su http://localhost:${app.get('port')}\n`);
+    console.log(`Server avviato con successo\n`);
 });
