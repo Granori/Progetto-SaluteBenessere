@@ -111,15 +111,16 @@ function App() {
 
                 </div>
 
-                <div className='className="flex items-center gap-10"'>
+                <div className='flex items-center gap-10'>
                   <label>Lingua</label>
+                  <p className='text-verde'>Work in progress . . .</p>
                 </div>
 
               </div>
 
               { !isLogged ?
                 <div className="flex justify-center mt-auto">
-                  <NavLink to='/login' className="bg-pulsante text-testo-affine hover:bg-verde-hover hover:shadow-verde-shadow w-full max-w-50 py-4 font-black rounded-xl shadow-lg transition-all duration-300 uppercase tracking-widest text-center cursor-pointer">
+                  <NavLink to='/login' onClick={() => {logout(); setIsOpenSettings(false)}} className="bg-pulsante text-testo-affine hover:bg-verde-hover hover:shadow-verde-shadow w-full max-w-50 py-4 font-black rounded-xl shadow-lg transition-all duration-300 uppercase tracking-widest text-center cursor-pointer">
                     Accedi
                   </NavLink>
                 </div>

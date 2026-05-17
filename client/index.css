@@ -30,6 +30,9 @@
   --color-verde-hover: var(--color-emerald-500);
   --color-verde-shadow: var(--color-emerald-200);
   --color-verde-sfondo: var(--color-emerald-50);
+
+  --color-cuore-sfondo: var(--color-emerald-100);
+  --color-cuore: var(--color-emerald-300);
 }
 
 /* Dark Mode */
@@ -60,6 +63,9 @@
   --color-verde-hover: var(--color-emerald-500);
   --color-verde-shadow: var(--color-emerald-800);
   --color-verde-sfondo: var(--color-emerald-800);
+
+  --color-cuore-sfondo: var(--color-emerald-200);
+  --color-cuore: var(--color-emerald-400);
 }
 
 /* * { outline: 1px solid red !important; } */

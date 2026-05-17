@@ -18,18 +18,18 @@ export default function HomePage({ userStatus }) {
                         Siamo qui per promuovere la cultura del benessere. Piccole abitudini quotidiane e una maggiore conoscenza di sé sono la base per una vita più sana e consapevole.
                     </p>
                     <div className="flex justify-center lg:justify-start pt-4">
-                        <button className="bg-pulsante text-testo-affine shadow-bordo-nav hover:bg-pulsante-hover px-8 lg:px-10 py-4 lg:py-5 rounded-2xl font-bold uppercase tracking-widest text-[10px] lg:text-xs transition-all shadow-xl active:scale-95">
+                        {/* <button className="bg-pulsante text-testo-affine shadow-bordo-nav hover:bg-pulsante-hover px-8 lg:px-10 py-4 lg:py-5 rounded-2xl font-bold uppercase tracking-widest text-[10px] lg:text-xs transition-all shadow-xl active:scale-95">
                             Esplora il progetto
-                        </button>
+                        </button> */}
                     </div>
                 </div>
 
                 {/* Card Immagine Cuore ridimensionata e centrata */}
                 <div className="flex-1 w-full max-w-[320px] md:max-w-100 lg:max-w-110">
-                    <div className="relative bg-emerald-50 rounded-[60px] aspect-[4/5] overflow-hidden border border-emerald-100/50 shadow-inner transform hover:rotate-1 transition-transform duration-500">
+                    <div className="relative bg-cuore-sfondo rounded-[60px] aspect-[4/5] overflow-hidden border border-emerald-100/50 shadow-inner transform hover:rotate-1 transition-transform duration-500">
                         <div className="absolute inset-0 flex items-center justify-center p-12">
                             {/* Icona o Illustrazione placeholder */}
-                            <svg className="w-48 h-48 text-emerald-200/60" fill="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-48 h-48 text-cuore" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                             </svg>
                         </div>
@@ -72,7 +72,7 @@ export default function HomePage({ userStatus }) {
             <section className="flex flex-col lg:flex-row-reverse items-center gap-12 lg:gap-20 pb-20">
                 <div className="flex-1 space-y-6 lg:space-y-8 text-center lg:text-left">
                     <h2 className="text-3xl lg:text-[42px] font-black leading-tight tracking-tight">
-                        Oltre i numeri, <br className="hidden lg:block" /> la consapevolezza.
+                        Oltre i numeri, <br className="hidden lg:block" /> la <span className="text-verde">consapevolezza</span>.
                     </h2>
                     <div className="border-y-2 lg:border-y-0 lg:border-l-4 border-verde-hover py-4 lg:py-2 lg:pl-8">
                         <p className="text-testo-opaco-2 text-lg font-medium italic">
@@ -86,11 +86,15 @@ export default function HomePage({ userStatus }) {
 
                 {/* Card Immagine Secondaria */}
                 <div className="relative flex-1 w-full max-w-95 lg:max-w-120">
-                    <div className="aspect-square bg-emerald-50 rounded-3xl overflow-hidden border-8 border-white shadow-xl flex items-center justify-center">
-                        <img src="https://unsplash.com"
-                            alt="Cibo salutare" className="object-cover w-full h-full opacity-90 hover:scale-110 transition-transform duration-700" />
+                    <div className="aspect-square bg-cuore-sfondo rounded-3xl overflow-hidden border-8 border-white shadow-xl flex items-center justify-center">
+                        <div className="absolute inset-0 flex items-center justify-center p-12">
+                            {/* Icona o Illustrazione placeholder */}
+                            <svg className="w-48 h-48 text-cuore" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                            </svg>
+                        </div>
                         <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-4 py-2 rounded-lg shadow-sm">
-                            <span className="text-xs font-bold uppercase text-verde italic">Immagine sulle calorie</span>
+                            <span className="text-xs font-bold uppercase text-verde italic">Volersi bene</span>
                         </div>
                     </div>
                 </div>
